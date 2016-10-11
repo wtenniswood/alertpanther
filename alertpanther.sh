@@ -74,7 +74,6 @@ function alerttimesearch
         paste -d " " <(echo "$numbers") <(echo "$nopaths") <(echo "$ipaddys") <(echo "$fileloc") | column -t -s $'\t '
 }
 
-
 function webserver
 {
 	#Determine the active webserver
