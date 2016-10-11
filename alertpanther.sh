@@ -74,7 +74,6 @@ function alerttimesearch
         paste -d " " <(echo "$numbers") <(echo "$nopaths") <(echo "$ipaddys") <(echo "$fileloc") | column -t -s $'\t '
 }
 
-
 function webserver
 {
 	#Determine the active webserver
@@ -82,7 +81,14 @@ function webserver
 	#perviously I grepped the log paths out of the conf and used lsof to verify, I may combine the two solutions in the future to account for the wayward naming scheme, this was a quick way to get around people using nginx
 	#as a proxy and just grab all the logs at onces
 	echo "Searching for logs..."
-	lsofalogs=$(lsof | awk '/httpd|nginx|apache2/ && /access/ && /log/ && !a[$9]++ {print $9}')
+	echo "Checking for root..."
+	if [[ $EUID -ne 0 ]]; then 
+		echo "Error! Please run as root..." 1>&2
+                echo "Exiting"
+                exit 1
+	else
+		lsofalogs=$(lsof 2>/dev/null| awk '/httpd|nginx|apache2/ && /access/ && /log/ && !a[$9]++ {print $9}')
+	fi
 }
 ###############################Program Begins Here###########################
 alertpanther
